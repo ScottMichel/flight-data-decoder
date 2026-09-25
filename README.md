@@ -1,70 +1,44 @@
 # Flight Data Decoder
 
-Mini décodeur de données de vol au format **ARINC 717**, écrit en **C# / .NET 10**.
+[![CI](https://github.com/ScottMichel/flight-data-decoder/actions/workflows/ci.yml/badge.svg)](https://github.com/ScottMichel/flight-data-decoder/actions/workflows/ci.yml)
 
-Il lit un fichier binaire enregistré « à bord », retrouve les secondes de vol grâce aux mots de synchronisation, extrait chaque paramètre (altitude, vitesse, cap…) et le convertit en valeur physique. Le résultat est exposé par une API REST.
+Un petit décodeur de données de vol, écrit en **C# / .NET 10**.
 
-> ⚠️ **Projet d'apprentissage.** Les vrais plans de lecture (frame layouts) sont propriétaires et propres à chaque avion. Ce projet utilise un **layout fictif** (`layouts/demo-layout.json`) et des **vols synthétiques** générés par l'outil `Generator`, qui respectent la structure ARINC 717 sans correspondre à un avion réel.
+Pendant un vol, l'avion enregistre ses paramètres (altitude, vitesse, cap…) dans un fichier binaire, au format **ARINC 717**. Ce projet lit ce fichier et le transforme en valeurs lisibles, accessibles par une API REST.
 
-## Démarrage rapide
+> ⚠️ **Projet d'apprentissage** : les données sont **synthétiques** et le plan de lecture est **fictif**. Les vrais plans sont propriétaires et propres à chaque avion.
 
-Prérequis : [SDK .NET 10](https://dotnet.microsoft.com/download).
+## Lancer le projet
+
+Prérequis : le [SDK .NET 10](https://dotnet.microsoft.com/download).
 
 ```bash
-# 1. Lancer les tests
+# Lancer les tests
 dotnet test
 
-# 2. Générer un vol synthétique de 30 minutes
-dotnet run --project src/FlightDataDecoder.Generator -- layouts/demo-layout.json samples/demo-flight.dat 1800
-
-# 3. Lancer l'API (http://localhost:5080)
+# Lancer l'API sur http://localhost:5080
 dotnet run --project src/FlightDataDecoder.Api
-
-# 4. Décoder le fichier (dans un autre terminal)
-curl -F "file=@samples/demo-flight.dat" http://localhost:5080/api/decode
 ```
+
+Un vol de démonstration de 30 minutes est fourni : `samples/demo-flight.dat`. Pour le décoder, ouvre `src/FlightDataDecoder.Api/FlightDataDecoder.Api.http` dans VS Code (extension REST Client) et clique sur « Send Request ».
 
 ## Comment ça marche
 
 ```
-fichier .dat ──► WordReader ──► FrameSynchronizer ──► FlightDecoder ──► JSON
- (octets)        (mots 12 bits)  (sous-trames = 1 s)   (+ layout JSON)   (séries de valeurs)
+fichier .dat  ──►  nombres de 12 bits  ──►  secondes de vol  ──►  valeurs physiques
 ```
 
-1. **WordReader** : chaque mot de 12 bits est stocké sur 16 bits little-endian ; on garde les 12 bits de poids faible.
-2. **FrameSynchronizer** : cherche les mots de synchro `0x247`, `0x5B8`, `0xA47`, `0xDB8` qui ouvrent les 4 sous-trames d'une trame, même si le fichier commence au milieu d'une seconde.
-3. **FlightDecoder** : pour chaque paramètre du layout, lit le bon mot, extrait les bons bits, gère le signe (complément à deux) et applique la résolution.
+1. Le fichier est une suite de nombres de 12 bits.
+2. Des nombres repères (« mots de synchro ») marquent le début de chaque seconde de vol.
+3. Un plan de lecture (`layouts/demo-layout.json`) indique où se trouve chaque paramètre et comment le convertir. Exemple : altitude brute 1250 × 8 = 10 000 ft.
 
-Plus de détails sur la norme dans [`docs/arinc717.md`](docs/arinc717.md).
+Pour aller plus loin : [`docs/arinc717.md`](docs/arinc717.md).
 
 ## Organisation
 
 | Dossier | Rôle |
 |---|---|
-| `src/FlightDataDecoder.Core` | Toute la logique de décodage, sans dépendance au web. |
-| `src/FlightDataDecoder.Api` | API REST minimale qui expose le Core. |
-| `src/FlightDataDecoder.Generator` | Outil console qui génère des vols synthétiques. |
-| `tests/FlightDataDecoder.Core.Tests` | Tests unitaires xUnit du Core. |
-| `layouts/` | Plans de lecture des paramètres (JSON). |
-| `samples/` | Fichiers de vol générés. |
-
-## API
-
-| Méthode | Route | Description |
-|---|---|---|
-| `GET` | `/api/health` | Vérifie que l'API répond. |
-| `GET` | `/api/layout` | Renvoie le layout utilisé. |
-| `POST` | `/api/decode` | Décode un fichier envoyé en `multipart/form-data` (champ `file`). |
-
-## Choix techniques
-
-- **Core indépendant** : le décodage se teste sans lancer de serveur, et pourrait être réutilisé dans un autre outil.
-- **Layout en JSON** : on ajoute un paramètre sans toucher au code.
-- **Tests aller-retour** : le `FrameWriter` encode des valeurs connues, le décodeur doit les retrouver à l'identique.
-- **Compilation stricte** : types nullables vérifiés et warnings traités comme des erreurs (`Directory.Build.props`).
-
-## Pistes d'évolution
-
-- Resynchronisation automatique après une perte de synchro.
-- Front React + Redux Toolkit + Vite pour afficher les courbes.
-- Codage BCD, superframes, Docker Compose.
+| `src/FlightDataDecoder.Core` | La logique de décodage |
+| `src/FlightDataDecoder.Api` | L'API REST |
+| `src/FlightDataDecoder.Generator` | Génère des vols synthétiques |
+| `tests/` | Les tests |
