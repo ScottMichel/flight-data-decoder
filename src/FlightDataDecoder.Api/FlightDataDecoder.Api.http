@@ -1,0 +1,21 @@
+### Fichier de requêtes pour l'extension REST Client de VS Code
+### Clique sur « Send Request » au-dessus de chaque requête (l'API doit tourner).
+
+@baseUrl = http://localhost:5080
+
+### Vérifier que l'API répond
+GET {{baseUrl}}/api/health
+
+### Voir le layout utilisé
+GET {{baseUrl}}/api/layout
+
+### Décoder le vol de démonstration
+POST {{baseUrl}}/api/decode
+Content-Type: multipart/form-data; boundary=FlightBoundary
+
+--FlightBoundary
+Content-Disposition: form-data; name="file"; filename="demo-flight.dat"
+Content-Type: application/octet-stream
+
+< ../../samples/demo-flight.dat
+--FlightBoundary--

@@ -1,0 +1,10 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/FlightDataDecoder.Api/FlightDataDecoder.Api.csproj" />
+    <Project Path="src/FlightDataDecoder.Core/FlightDataDecoder.Core.csproj" />
+    <Project Path="src/FlightDataDecoder.Generator/FlightDataDecoder.Generator.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/FlightDataDecoder.Core.Tests/FlightDataDecoder.Core.Tests.csproj" />
+  </Folder>
+</Solution>

@@ -1,0 +1,12 @@
+{
+  "name": "Demo layout (64 mots/s, fictif)",
+  "wordsPerSecond": 64,
+  "parameters": [
+    { "name": "Altitude",  "unit": "ft",  "word": 2, "firstBit": 1, "bitCount": 12, "resolution": 8 },
+    { "name": "Airspeed",  "unit": "kt",  "word": 3, "firstBit": 1, "bitCount": 12, "resolution": 0.5 },
+    { "name": "Heading",   "unit": "deg", "word": 4, "firstBit": 1, "bitCount": 12, "resolution": 0.087890625 },
+    { "name": "Pitch",     "unit": "deg", "word": 5, "firstBit": 1, "bitCount": 12, "signed": true, "resolution": 0.1 },
+    { "name": "GearDown",  "unit": "",    "word": 6, "firstBit": 1, "bitCount": 1,  "encoding": "Discrete" },
+    { "name": "EngineN1",  "unit": "%",   "word": 7, "firstBit": 1, "bitCount": 12, "resolution": 0.05, "subframes": [1] }
+  ]
+}
