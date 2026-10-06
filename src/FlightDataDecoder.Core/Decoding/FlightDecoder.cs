@@ -29,6 +29,6 @@ public static class FlightDecoder
                 ParameterDecoder.Decode(subframe.GetWord(parameter.Word), parameter)))
             .ToList();
 
-        return new ParameterSeries(parameter.Name, parameter.Unit, points);
+        return new ParameterSeries(parameter.Name, parameter.Unit, parameter.Encoding, points);
     }
 }

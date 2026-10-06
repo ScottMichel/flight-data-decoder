@@ -14,6 +14,7 @@ public class FlightDecoderTests
     [
         new ParameterDefinition("Altitude", "ft", Word: 2, FirstBit: 1, BitCount: 12, Resolution: 8),
         new ParameterDefinition("EngineN1", "%", Word: 3, FirstBit: 1, BitCount: 12, Resolution: 0.05, Subframes: [1]),
+        new ParameterDefinition("GearDown", "", Word: 4, FirstBit: 1, BitCount: 1, Encoding: ParameterEncoding.Discrete),
     ]);
 
     private static byte[] WriteFlight(int seconds)
@@ -51,5 +52,14 @@ public class FlightDecoderTests
         var n1 = flight.Parameters.Single(p => p.Name == "EngineN1");
         Assert.Equal(new[] { 0, 4 }, n1.Points.Select(p => p.Time));
         Assert.All(n1.Points, point => Assert.Equal(85, point.Value, precision: 6));
+    }
+
+    [Fact]
+    public void Decode_ReturnsTheEncodingOfEachParameter()
+    {
+        var flight = FlightDecoder.Decode(WriteFlight(seconds: 4), Layout);
+
+        Assert.Equal(ParameterEncoding.Bnr, flight.Parameters.Single(p => p.Name == "Altitude").Encoding);
+        Assert.Equal(ParameterEncoding.Discrete, flight.Parameters.Single(p => p.Name == "GearDown").Encoding);
     }
 }

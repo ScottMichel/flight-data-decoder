@@ -1,7 +1,12 @@
+using System.Text.Json.Serialization;
 using FlightDataDecoder.Core.Decoding;
 using FlightDataDecoder.Core.Layout;
 
 var builder = WebApplication.CreateBuilder(args);
+
+// Les enums sont envoyés en texte ("Discrete") plutôt qu'en nombre (1) : plus lisible côté front.
+builder.Services.ConfigureHttpJsonOptions(options =>
+    options.SerializerOptions.Converters.Add(new JsonStringEnumConverter()));
 
 // Le layout est chargé une seule fois au démarrage (chemin défini dans appsettings.json).
 var layoutPath = builder.Configuration["LayoutPath"]
