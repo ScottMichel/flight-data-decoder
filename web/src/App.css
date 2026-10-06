@@ -1,0 +1,74 @@
+.header {
+  margin-bottom: 24px;
+}
+
+.header p {
+  color: var(--muted);
+  margin: 0;
+}
+
+/* Zone d'upload : le vrai <input type="file"> est masqué, le <label> le remplace. */
+.upload {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+}
+
+.upload input {
+  display: none;
+}
+
+.upload-button {
+  padding: 10px 18px;
+  border-radius: 6px;
+  background: var(--accent);
+  color: #fff;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.upload input:disabled + .upload-button {
+  opacity: 0.6;
+  cursor: wait;
+}
+
+.upload-hint {
+  color: var(--muted);
+  font-size: 14px;
+}
+
+.message {
+  margin: 16px 0 0;
+}
+
+.error {
+  color: var(--danger);
+}
+
+.summary {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 12px;
+  margin: 24px 0;
+}
+
+.summary div,
+.card {
+  padding: 12px 16px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--card);
+}
+
+.summary dt {
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.summary dd {
+  margin: 0;
+  color: var(--text-h);
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}
