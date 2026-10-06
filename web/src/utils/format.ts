@@ -6,3 +6,10 @@ export function formatDuration(totalSeconds: number): string {
   const seconds = totalSeconds % SECONDS_PER_MINUTE
   return `${minutes} min ${String(seconds).padStart(2, '0')} s`
 }
+
+/** Formate un instant du vol en minutes:secondes : 125 → "2:05". */
+export function formatClock(totalSeconds: number): string {
+  const minutes = Math.floor(totalSeconds / SECONDS_PER_MINUTE)
+  const seconds = totalSeconds % SECONDS_PER_MINUTE
+  return `${minutes}:${String(seconds).padStart(2, '0')}`
+}
