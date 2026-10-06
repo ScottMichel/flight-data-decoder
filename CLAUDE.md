@@ -25,6 +25,11 @@ Mini décodeur de données de vol au format ARINC 717 : fichier binaire → mots
 - `src/FlightDataDecoder.Api` : minimal API ASP.NET Core, port 5080, requêtes de test dans `FlightDataDecoder.Api.http`, CORS ouvert pour `http://localhost:5173`. Routes : `GET /api/health`, `GET /api/layout`, `POST /api/decode` (multipart, champ `file`).
 - `src/FlightDataDecoder.Generator` : console qui génère un vol synthétique (`FlightSimulator`).
 - `tests/FlightDataDecoder.Core.Tests` : xUnit, tests unitaires + tests aller-retour (encode puis décode).
+- `web/` : front React + TypeScript + Vite, **Redux Toolkit** et Recharts. Le proxy Vite transmet `/api` à `localhost:5080`.
+  - `api/` : types qui reflètent les records C# (camelCase, enums en texte) et `decodeFlight(file)`.
+  - `store/` : `store`, `flightSlice` (`createAsyncThunk` `decodeFile`, statuts `idle`/`loading`/`succeeded`/`failed`), hooks typés.
+  - `components/` : `FileUpload`, `FlightSummary`, `ParameterChart` (BNR, graphiques synchronisés sur le temps), `StateTimeline` (discrets).
+  - `utils/` : formatage du temps, `toStateIntervals`. Tests Vitest à côté des fichiers (`*.test.ts`).
 - `layouts/demo-layout.json` : 64 mots/s ; Altitude, Airspeed, Heading, Pitch (signé), GearDown (discret), EngineN1 (sous-trame 1 seulement).
 
 ## Décisions de format
@@ -51,13 +56,19 @@ dotnet build
 dotnet test
 dotnet run --project src/FlightDataDecoder.Generator -- layouts/demo-layout.json samples/demo-flight.dat 1800
 dotnet run --project src/FlightDataDecoder.Api
+
+# Dans web/
+npm run dev     # http://localhost:5173 (l'API doit tourner)
+npm test        # Vitest
+npm run lint
+npm run build
 ```
 
 Pour tester l'API : `src/FlightDataDecoder.Api/FlightDataDecoder.Api.http` (extension REST Client, lien « Send Request »).
 
 ## Feuille de route
 
-1. Front `web/` : React + TypeScript + Vite + **Redux Toolkit** (demandé par l'offre visée). Upload d'un fichier, appel à `/api/decode`, courbes par paramètre (Recharts), train d'atterrissage affiché comme un état.
+1. ✅ Front `web/` : React + TypeScript + Vite + **Redux Toolkit** (demandé par l'offre visée). Upload d'un fichier, appel à `/api/decode`, courbes par paramètre (Recharts), train d'atterrissage affiché comme un état.
 2. Resynchronisation après perte de synchro, avec compteur de secondes perdues dans le résultat.
 3. Codage BCD et superframes dans le layout.
 4. Docker Compose (API + front) et mise à jour de la CI (build du front).
