@@ -6,6 +6,7 @@
   --card: #ffffff;
   --border: #e5e7eb;
   --accent: #2563eb;
+  --on-accent: #ffffff;
   --danger: #dc2626;
   --success: #16a34a;
 
@@ -25,6 +26,7 @@
     --card: #1f2937;
     --border: #374151;
     --accent: #60a5fa;
+    --on-accent: #111827;
     --danger: #f87171;
     --success: #4ade80;
   }

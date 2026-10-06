@@ -21,7 +21,9 @@ function ParameterChart({ series }: ParameterChartProps) {
         {series.name} <span className="chart-unit">{series.unit && `(${series.unit})`}</span>
       </h2>
       <ResponsiveContainer width="100%" height={CHART_HEIGHT}>
-        <LineChart data={series.points} syncId={CHART_SYNC_ID} margin={{ top: 8, right: 16, bottom: 0, left: 0 }}>
+        {/* syncMethod="value" : on synchronise sur le temps, pas sur l'index du point
+            (EngineN1 n'a qu'une mesure toutes les 4 secondes). */}
+        <LineChart data={series.points} syncId={CHART_SYNC_ID} syncMethod="value" margin={{ top: 8, right: 16, bottom: 0, left: 0 }}>
           <CartesianGrid stroke="var(--border)" vertical={false} />
           <XAxis
             dataKey="time"

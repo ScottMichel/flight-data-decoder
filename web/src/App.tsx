@@ -1,6 +1,7 @@
 import FileUpload from './components/FileUpload'
 import FlightSummary from './components/FlightSummary'
 import ParameterChart from './components/ParameterChart'
+import StateTimeline from './components/StateTimeline'
 import { useAppSelector } from './store/hooks'
 import './App.css'
 
@@ -25,6 +26,11 @@ function App() {
       {status === 'succeeded' && flight && flight.durationSeconds > 0 && (
         <>
           <FlightSummary fileName={fileName} flight={flight} />
+          {flight.parameters
+            .filter((series) => series.encoding === 'Discrete')
+            .map((series) => (
+              <StateTimeline key={series.name} series={series} durationSeconds={flight.durationSeconds} />
+            ))}
           <div className="charts">
             {flight.parameters
               .filter((series) => series.encoding === 'Bnr')

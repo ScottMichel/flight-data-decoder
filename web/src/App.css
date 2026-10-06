@@ -23,7 +23,7 @@
   padding: 10px 18px;
   border-radius: 6px;
   background: var(--accent);
-  color: #fff;
+  color: var(--on-accent);
   font-weight: 600;
   cursor: pointer;
 }
@@ -65,6 +65,52 @@
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(min(100%, 480px), 1fr));
   gap: 16px;
+}
+
+/* Ligne de temps d'un paramètre discret : une barre découpée en périodes. */
+.timeline {
+  display: flex;
+  height: 32px;
+  border-radius: 6px;
+  overflow: hidden;
+  gap: 2px;
+  background: var(--card);
+}
+
+.timeline-segment {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 2px;
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.timeline-segment.on {
+  background: var(--accent);
+  color: var(--on-accent);
+}
+
+.timeline-segment.off {
+  background: var(--border);
+  color: var(--text-h);
+}
+
+.timeline-events {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 20px;
+  margin: 12px 0 0;
+  padding: 0;
+  list-style: none;
+  font-size: 14px;
+}
+
+.card + .charts,
+.summary + .card {
+  margin-bottom: 16px;
 }
 
 .chart-title {
